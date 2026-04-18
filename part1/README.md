@@ -1,6 +1,6 @@
-# HBnB – High-Level Architecture Diagram
+# ⚡HBnB – High-Level Architecture Diagram
 
-# TASK 0
+# 📍TASK 0
 
    ## Overview
     This document presents a high-level package diagram of the HBnB application. The diagram illustrates a three-layer 
@@ -109,7 +109,8 @@ BusinessLogicLayer --> PersistenceLayer : Database operations
 
 ------
 
-# TASK 1 -Business Logic Layer
+
+# 📍TASK 1 -Business Logic Layer
 
    ## Overview
    
@@ -134,62 +135,94 @@ BusinessLogicLayer --> PersistenceLayer : Database operations
 
 ```mermaid
 classDiagram
+    class BaseModel {
+        +UUID4 id
+        +DateTime created_at
+        +DateTime updated_at
+        +save()
+        +update(data)
+    }
 
-class User {
-    +UUID id
-    +string first_name
-    +string last_name
-    +string email
-    +string password
-    +datetime created_at
-    +datetime updated_at
-    +create()
-    +update()
-    +delete()
-}
+    class User {
+        +String first_name
+        +String last_name
+        +String email
+        +String password
+        +Boolean is_admin
+        +register()
+        +update_profile()
+    }
 
-class Place {
-    +UUID id
-    +string title
-    +string description
-    +float price
-    +string location
-    +float latitude
-    +float longitude
-    +datetime created_at
-    +datetime updated_at
-    +create()
-    +update()
-    +delete()
-    +add_review(review)
-    +get_average_rating()
-    +to_dict()
-}
+    class Place {
+        +String title
+        +String description
+        +Float price
+        +Float latitude
+        +Float longitude
+        +UUID4 owner_id
+        +create()
+        +update()
+    }
 
-class Review {
-    +UUID id
-    +string text
-    +int rating
-    +datetime created_at
-    +datetime updated_at
-    +create()
-    +update()
-    +delete()
-}
+    class Review {
+        +Int rating
+        +String comment
+        +UUID4 place_id
+        +UUID4 user_id
+        +post()
+    }
 
-class Amenity {
-    +UUID id
-    +string name
-    +create()
-    +update()
-    +delete()
-}
+    class Amenity {
+        +String name
+        +String description
+        +create()
+    }
 
-%% Relationships
-User "1" --> "many" Place : owns
-User "1" --> "many" Review : writes
-Place "1" --> "many" Review : has
-Place "many" --> "many" Amenity : includes
+    %% Relationships
+    User --|> BaseModel : Inherits
+    Place --|> BaseModel : Inherits
+    Review --|> BaseModel : Inherits
+    Amenity --|> BaseModel : Inherits
 
-Review --> User : belongs_to
-Review --> Place : belongs_to
+    User "1" --> "0..*" Place : Owns
+    Place "1" --> "0..*" Review : Has
+    User "1" --> "0..*" Review : Writes
+    Place "0..*" -- "0..*" Amenity : Includes
+
+```
+---
+
+# 📍TASK 2 - API Calls
+
+   ## Overview
+      This document shows 4 main API flows in the HBnB application using sequence diagrams.  
+      Each diagram illustrates how the **Presentation**, **Business Logic**, and **Persistence** layers interact.
+   
+---
+
+# User Registration
+
+```mermaid
+sequenceDiagram
+participant User
+participant API
+participant BusinessLogic
+participant Database
+
+User->>API: POST /users (register)
+API->>BusinessLogic: validate & create user
+BusinessLogic->>Database: save user
+Database-->>BusinessLogic: confirmation
+BusinessLogic-->>API: success
+API-->>User: 201 Created
+
+User->>API: Send Review (Rating, Comment)
+API->>BusinessLogic: Check IDs
+BusinessLogic->>Database: Save Review
+Database-->>BusinessLogic: Success
+BusinessLogic-->>API: Review Added
+API-->>User: Thank you for your review!
+
+```
+---
+#Thank you for your attention :)
