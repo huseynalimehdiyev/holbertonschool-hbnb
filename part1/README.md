@@ -11,7 +11,7 @@
 ---
     
    ## Architecture Overview
-    The HBnB application follows a **layered architecture** composed of three main layers:
+    The HBnB application follows a layered architecture composed of three main layers:
     1. Presentation Layer
     2. Business Logic Layer
     3. Persistence Layer
@@ -70,7 +70,7 @@
     The result is returned back to the user through the same path
 
 
-## 📊 Package Diagram
+## Package Diagram
 
 ```mermaid
 classDiagram
@@ -106,3 +106,90 @@ Facade --> BusinessLogicLayer : Handles business logic
 BusinessLogicLayer --> PersistenceLayer : Database operations
 
 ```
+
+------
+
+# TASK 1 -Business Logic Layer
+
+   ## Overview
+   
+      This document describes the **Business Logic layer** of the HBnB application. It provides a detailed UML class 
+      diagram representing the core entities of the system, their attributes, methods, and relationships.The main goal is
+      to clearly model how the business logic of the application is structured and how the main entities interact with each other.
+   
+---
+   
+   ## Business Logic Layer
+   
+      The Business Logic layer contains the core entities of the application:
+      - User
+      - Place
+      - Review
+      - Amenity
+      These entities define the main functionality of the system and enforce business rules.
+   
+---
+
+## Class Diagram
+
+```mermaid
+classDiagram
+
+class User {
+    +UUID id
+    +string first_name
+    +string last_name
+    +string email
+    +string password
+    +datetime created_at
+    +datetime updated_at
+    +create()
+    +update()
+    +delete()
+}
+
+class Place {
+    +UUID id
+    +string title
+    +string description
+    +float price
+    +string location
+    +float latitude
+    +float longitude
+    +datetime created_at
+    +datetime updated_at
+    +create()
+    +update()
+    +delete()
+    +add_review(review)
+    +get_average_rating()
+    +to_dict()
+}
+
+class Review {
+    +UUID id
+    +string text
+    +int rating
+    +datetime created_at
+    +datetime updated_at
+    +create()
+    +update()
+    +delete()
+}
+
+class Amenity {
+    +UUID id
+    +string name
+    +create()
+    +update()
+    +delete()
+}
+
+%% Relationships
+User "1" --> "many" Place : owns
+User "1" --> "many" Review : writes
+Place "1" --> "many" Review : has
+Place "many" --> "many" Amenity : includes
+
+Review --> User : belongs_to
+Review --> Place : belongs_to
