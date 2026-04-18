@@ -1,13 +1,13 @@
 # HBnB – High-Level Architecture Diagram
 
-## 📌 Overview
+## Overview
 This document presents a high-level package diagram of the HBnB application. The diagram illustrates a **three-layer architecture** and demonstrates how these layers communicate using the **Facade design pattern**.
 
 The goal is to provide a clear and structured view of how the system is organized and how its components interact.
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 The HBnB application follows a **layered architecture** composed of three main layers:
 
 1. **Presentation Layer**
@@ -18,7 +18,7 @@ Each layer has a specific responsibility and communicates with others in a contr
 
 ---
 
-## 📊 Package Diagram
+## Package Diagram
 
 ```mermaid
 classDiagram
