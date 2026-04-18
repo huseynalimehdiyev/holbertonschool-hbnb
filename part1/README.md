@@ -1,6 +1,6 @@
-# ⚡HBnB – High-Level Architecture Diagram
+# ⚡HBnB – Documentation
 
-# 📍TASK 0
+# 📍TASK 0 - High-Level Package Diagram
 
    ## Overview
     This document presents a high-level package diagram of the HBnB application. The diagram illustrates a three-layer 
