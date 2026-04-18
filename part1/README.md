@@ -80,13 +80,11 @@ It helps achieve:
 classDiagram
 
 class PresentationLayer {
-    <<Layer>>
     +API Endpoints
     +Services
 }
 
 class Facade {
-    <<Facade>>
     +createUser()
     +getPlaces()
     +addReview()
@@ -94,7 +92,6 @@ class Facade {
 }
 
 class BusinessLogicLayer {
-    <<Layer>>
     +User
     +Place
     +Review
@@ -102,7 +99,6 @@ class BusinessLogicLayer {
 }
 
 class PersistenceLayer {
-    <<Layer>>
     +UserRepository
     +PlaceRepository
     +ReviewRepository
@@ -112,3 +108,5 @@ class PersistenceLayer {
 PresentationLayer --> Facade : Uses
 Facade --> BusinessLogicLayer : Handles business logic
 BusinessLogicLayer --> PersistenceLayer : Database operations
+
+```
