@@ -19,7 +19,7 @@
     
 ---
     
-   ## Layer Descriptions
+   ## ▫️Layer Descriptions
     
    ### 1. Presentation Layer
     This is the layer that users directly interact with. It includes: API endpoints and Services. When a user sends a request 
@@ -46,7 +46,7 @@
 ---
     
     
-   ## Facade Pattern
+   ## ▫️Facade Pattern
     
     The Facade pattern makes communication between layers much simpler. Instead of the Presentation Layer directly 
     talking to the Business Logic Layer, everything goes through the Facade.
