@@ -114,9 +114,10 @@ BusinessLogicLayer --> PersistenceLayer : Database operations
 
    ## Overview
    
-      This document describes the **Business Logic layer** of the HBnB application. It provides a detailed UML class 
-      diagram representing the core entities of the system, their attributes, methods, and relationships.The main goal is
-      to clearly model how the business logic of the application is structured and how the main entities interact with each other.
+      This document describes the **Business Logic layer** of the HBnB application. It provides a detailed UML 
+      class diagram representing the core entities of the system, their attributes, methods, and relationships.
+      The main goal is to clearly model how the business logic of the application is structured and how the main 
+      entities interact with each other.
    
 ---
    
