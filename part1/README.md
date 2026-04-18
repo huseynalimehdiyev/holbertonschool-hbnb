@@ -197,8 +197,8 @@ classDiagram
 # 📍TASK 2 - API Calls
 
    ## Overview
-      This document shows 4 main API flows in the HBnB application using sequence diagrams.  
-      Each diagram illustrates how the **Presentation**, **Business Logic**, and **Persistence** layers interact.
+      This document shows 2 main API flows in the HBnB application using sequence diagrams.  
+      Each diagram illustrates how the Presentation, Business Logic, and Persistence layers interact.
    
 ---
 
