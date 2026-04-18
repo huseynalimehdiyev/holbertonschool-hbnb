@@ -62,7 +62,7 @@
     Improves readability and maintainability
     Reduces tight coupling between layers
     
-   ### 🔄 Communication Flow
+   ### Communication Flow
     The user sends a request to the Presentation Layer
     The request is forwarded to the Facade
     The Facade calls the Business Logic Layer
@@ -190,7 +190,9 @@ classDiagram
     Place "0..*" -- "0..*" Amenity : Includes
 
 ```
+
 ---
+
 
 # 📍TASK 2 - API Calls
 
@@ -224,5 +226,7 @@ BusinessLogic-->>API: Review Added
 API-->>User: Thank you for your review!
 
 ```
+
 ---
-#Thank you for your attention :)
+
+# Thank you for your attention :)
