@@ -1,4 +1,12 @@
-class Amenity:
+from app.models.base_model import BaseModel
+
+class Amenity(BaseModel):
     def __init__(self, name):
-        self.id = None
+        super().__init__()
         self.name = name
+
+    def update(self, data):
+        for key, value in data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        self.save()
