@@ -11,9 +11,7 @@ user_model = api.model('User', {
     'email': fields.String(required=True)
 })
 
-# -------------------------
-# POST + GET ALL
-# -------------------------
+
 @api.route('/')
 class UserList(Resource):
 

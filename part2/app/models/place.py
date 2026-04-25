@@ -29,6 +29,12 @@ class Place(BaseModel):
             raise ValueError("Longitude must be between -180 and 180")
         return lon
 
+    def validate_price(self, price):
+        price = float(price)
+        if price < 0:
+            raise ValueError("Price must be positive")
+        return price
+
     def update(self, data):
         for key, value in data.items():
             if hasattr(self, key):

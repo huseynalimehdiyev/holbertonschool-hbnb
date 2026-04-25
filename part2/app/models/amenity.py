@@ -5,6 +5,11 @@ class Amenity(BaseModel):
         super().__init__()
         self.name = name
 
+    def validate_name(self, name):
+        if not name or len(name.strip()) == 0:
+            raise ValueError("Name cannot be empty")
+        return name
+
     def update(self, data):
         for key, value in data.items():
             if hasattr(self, key):
