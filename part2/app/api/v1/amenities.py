@@ -5,63 +5,45 @@ from app.services.facade import facade
 api = Namespace('amenities', description='Amenity operations')
 
 amenity_model = api.model('Amenity', {
-    'name': fields.String(required=True, description='Amenity name')
+    'name': fields.String(required=True)
 })
-
 
 @api.route('/')
 class AmenityList(Resource):
 
-    # GET /amenities/
     def get(self):
         amenities = facade.get_all_amenities()
+        return [a.__dict__ for a in amenities], 200
 
-        return [
-            {
-                "id": a.id,
-                "name": a.name
-            }
-            for a in amenities
-        ], 200
-
-    # POST /amenities/
     @api.expect(amenity_model)
     def post(self):
         data = request.json
-        amenity = facade.create_amenity(data)
+        try:
+            amenity = facade.create_amenity(data)
+        except ValueError as e:
+            return {"error": str(e)}, 400
 
-        return {
-            "id": amenity.id,
-            "name": amenity.name
-        }, 201
-
+        return amenity.__dict__, 201
 
 
 @api.route('/<string:amenity_id>')
 class AmenityResource(Resource):
 
-    # GET /amenities/<id>
     def get(self, amenity_id):
         amenity = facade.get_amenity(amenity_id)
-
         if not amenity:
             return {"error": "Amenity not found"}, 404
+        return amenity.__dict__, 200
 
-        return {
-            "id": amenity.id,
-            "name": amenity.name
-        }, 200
-
-    # PUT /amenities/<id>
     @api.expect(amenity_model)
     def put(self, amenity_id):
         data = request.json
-        amenity = facade.update_amenity(amenity_id, data)
+        try:
+            amenity = facade.update_amenity(amenity_id, data)
+        except ValueError as e:
+            return {"error": str(e)}, 400
 
         if not amenity:
             return {"error": "Amenity not found"}, 404
 
-        return {
-            "id": amenity.id,
-            "name": amenity.name
-        }, 200
+        return amenity.__dict__, 200
