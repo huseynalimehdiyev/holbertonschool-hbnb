@@ -1,4 +1,4 @@
-erDiagram
+
 
     USER {
         string id PK
