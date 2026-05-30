@@ -2,10 +2,10 @@ from flask_restx import Namespace, Resource
 from flask import request
 
 from flask_jwt_extended import (
-    create_access_token
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
 )
-
-from flask_jwt_extended import jwt_required
 
 from app.services.facade import facade
 
@@ -15,6 +15,9 @@ api = Namespace(
 )
 
 
+# ======================
+# LOGIN
+# ======================
 @api.route("/login")
 class Login(Resource):
 
@@ -22,26 +25,20 @@ class Login(Resource):
 
         data = request.get_json()
 
-        if not data:
-            return {
-                "error": "Missing JSON data"
-            }, 400
+        # 🔥 safer validation
+        if not data or "email" not in data or "password" not in data:
+            return {"error": "Missing credentials"}, 400
 
         email = data.get("email")
         password = data.get("password")
 
         user = facade.get_user_by_email(email)
 
-        if not user:
-            return {
-                "error": "Invalid credentials"
-            }, 401
+        # ❌ invalid credentials (generic response is correct)
+        if not user or not user.verify_password(password):
+            return {"error": "Invalid credentials"}, 401
 
-        if not user.verify_password(password):
-            return {
-                "error": "Invalid credentials"
-            }, 401
-
+        # 🔥 JWT with role info
         token = create_access_token(
             identity=user.id,
             additional_claims={
@@ -49,16 +46,21 @@ class Login(Resource):
             }
         )
 
-        return {
-            "access_token": token
-        }, 200
+        return {"access_token": token}, 200
 
+
+# ======================
+# PROTECTED ROUTE
+# ======================
 @api.route("/protected")
 class Protected(Resource):
 
     @jwt_required()
     def get(self):
 
+        user_id = get_jwt_identity()
+
         return {
-            "message": "Access granted"
+            "message": "Access granted",
+            "user_id": user_id
         }, 200

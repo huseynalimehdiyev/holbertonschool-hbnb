@@ -37,21 +37,17 @@ class HBnBFacade:
         if not user:
             return None
 
-        # only safe fields
-        if "email" in data:
-            data.pop("email")
-        if "password" in data:
-            data.pop("password")
+        # ❌ SECURITY: block sensitive fields
+        data.pop("email", None)
+        data.pop("password", None)
+        data.pop("is_admin", None)
 
         return self.user_repo.update(user_id, data)
 
     def get_user_by_email(self, email):
-        users = self.user_repo.get_all()
-
-        for user in users:
+        for user in self.user_repo.get_all():
             if user.email == email:
                 return user
-
         return None
 
     # ======================
@@ -99,19 +95,19 @@ class HBnBFacade:
         if not user or not place:
             raise ValueError("Invalid user_id or place_id")
 
-        # ❌ owner cannot review own place
-        if place.owner_id == data["user_id"]:
+        # ❌ cannot review own place
+        if getattr(place, "owner_id", None) == data["user_id"]:
             raise ValueError("You cannot review your own place")
 
-        # ❌ duplicate review check
-        reviews = self.review_repo.get_all()
-        for r in reviews:
+        # ❌ duplicate review prevention
+        for r in self.review_repo.get_all():
             if r.user_id == data["user_id"] and r.place_id == data["place_id"]:
                 raise ValueError("You already reviewed this place")
 
         review = Review(**data)
         created = self.review_repo.create(review)
 
+        # link review to place
         if not hasattr(place, "reviews"):
             place.reviews = []
 
