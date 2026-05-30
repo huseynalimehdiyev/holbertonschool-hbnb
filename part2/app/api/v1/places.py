@@ -1,6 +1,10 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services.facade import facade
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 
 api = Namespace('places', description='Place operations')
 
@@ -83,3 +87,38 @@ class PlaceResource(Resource):
             return {"error": "Place not found"}, 404
 
         return place.__dict__, 200
+    
+@jwt_required()
+def post(self):
+
+    data = request.get_json()
+
+    data["owner_id"] = get_jwt_identity()
+
+    place = facade.create_place(data)
+
+    return place.to_dict(), 201
+
+@jwt_required()
+def put(self, place_id):
+
+    place = facade.get_place(place_id)
+
+    if not place:
+        return {"error": "Place not found"}, 404
+
+    current_user_id = get_jwt_identity()
+
+    if place.owner_id != current_user_id:
+        return {
+            "error": "Unauthorized action"
+        }, 403
+
+    data = request.get_json()
+
+    updated = facade.update_place(
+        place_id,
+        data
+    )
+
+    return updated.to_dict(), 200

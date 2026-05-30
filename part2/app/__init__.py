@@ -2,7 +2,10 @@ from flask import Flask
 from flask_restx import Api
 from flask_bcrypt import Bcrypt
 from config import Config
+from flask_jwt_extended import JWTManager
+from app.api.v1.auth import api as auth_ns
 
+jwt = JWTManager()
 bcrypt = Bcrypt()
 
 
@@ -12,6 +15,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     bcrypt.init_app(app)
+    jwt.init_app(app)
 
     api = Api(app, title="HBnB API", version="1.0")
 
@@ -24,5 +28,6 @@ def create_app(config_class=Config):
     api.add_namespace(places_ns, path="/places")
     api.add_namespace(reviews_ns, path="/reviews")
     api.add_namespace(amenities_ns, path="/amenities")
-
+    api.add_namespace(auth_ns, path="/auth")
+    
     return app

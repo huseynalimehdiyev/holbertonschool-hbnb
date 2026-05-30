@@ -3,7 +3,7 @@ from app import bcrypt
 
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, password):
+    def __init__(self, first_name, last_name, email, password, is_admin=False):
         super().__init__()
 
         self.first_name = first_name
@@ -14,6 +14,8 @@ class User(BaseModel):
         self.password = bcrypt.generate_password_hash(
             password
         ).decode("utf-8")
+
+        self.is_admin = is_admin
 
     def validate_email(self, email):
         if "@" not in email:

@@ -1,6 +1,10 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services.facade import facade
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 
 api = Namespace('users', description='User operations')
 
@@ -58,3 +62,31 @@ class UserResource(Resource):
             return {"error": "User not found"}, 404
 
         return user.__dict__, 200
+    
+@jwt_required()
+def put(self, user_id):
+
+    current_user_id = get_jwt_identity()
+
+    if current_user_id != user_id:
+        return {
+            "error": "Unauthorized action"
+        }, 403
+
+    data = request.get_json()
+
+    # email və password dəyişmək olmaz
+    data.pop("email", None)
+    data.pop("password", None)
+
+    user = facade.update_user(user_id, data)
+
+    if not user:
+        return {"error": "User not found"}, 404
+
+    return {
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email
+    }, 200
