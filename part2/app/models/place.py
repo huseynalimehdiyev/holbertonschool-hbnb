@@ -1,21 +1,39 @@
-from app.models.base_model import BaseModel
+from app.models.base_model import BaseModel, db
+
 
 class Place(BaseModel):
-    def __init__(self, title, description, price, latitude, longitude, owner_id, amenities=None):
-        super().__init__()
+    __tablename__ = "places"
 
-        # basic fields
-        self.title = title
-        self.description = description
+    title = db.Column(db.String(128), nullable=False)
+    description = db.Column(db.Text, nullable=True)
 
-        # validation
-        self.price = float(price)
-        self.latitude = self.validate_lat(latitude)
-        self.longitude = self.validate_long(longitude)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
 
-        # relationships
-        self.owner_id = owner_id
-        self.amenities = amenities if amenities else []
+    owner_id = db.Column(db.String(60), nullable=False)
+
+    # ❌ NO relationships yet (task requirement)
+
+    def update(self, data):
+        for key, value in data.items():
+
+            # basic validation (optional lightweight safety)
+            if key == "latitude":
+                value = self.validate_lat(value)
+            elif key == "longitude":
+                value = self.validate_long(value)
+            elif key == "price":
+                value = self.validate_price(value)
+
+            if hasattr(self, key):
+                setattr(self, key, value)
+
+        db.session.commit()
+
+    # ======================
+    # VALIDATION HELPERS
+    # ======================
 
     def validate_lat(self, lat):
         lat = float(lat)
@@ -34,9 +52,3 @@ class Place(BaseModel):
         if price < 0:
             raise ValueError("Price must be positive")
         return price
-
-    def update(self, data):
-        for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        self.save()

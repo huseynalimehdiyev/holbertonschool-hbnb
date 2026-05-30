@@ -1,14 +1,32 @@
-from app.models.base_model import BaseModel
+from app.models.base_model import BaseModel, db
+
 
 class Review(BaseModel):
-    def __init__(self, text, rating, user_id, place_id):
-        super().__init__()
+    __tablename__ = "reviews"
 
-        self.text = self.validate_text(text)
-        self.rating = self.validate_rating(rating)
+    text = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.String(60), nullable=False)
+    place_id = db.Column(db.String(60), nullable=False)
 
-        self.user_id = user_id
-        self.place_id = place_id
+    # ❌ Relationships will be added later (Place, User)
+
+    def update(self, data):
+        for key, value in data.items():
+            # validation helpers
+            if key == "text":
+                value = self.validate_text(value)
+            elif key == "rating":
+                value = self.validate_rating(value)
+
+            if hasattr(self, key):
+                setattr(self, key, value)
+
+        db.session.commit()
+
+    # ======================
+    # VALIDATION HELPERS
+    # ======================
 
     def validate_text(self, text):
         if not text or len(text.strip()) == 0:
