@@ -6,16 +6,18 @@ class Review(BaseModel):
 
     text = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Float, nullable=False)
-    user_id = db.Column(db.String(60), nullable=False)
-    place_id = db.Column(db.String(60), nullable=False)
 
-    # ❌ Relationships will be added later (Place, User)
+    user_id = db.Column(db.String(60), db.ForeignKey("users.id"), nullable=False)
+    place_id = db.Column(db.String(60), db.ForeignKey("places.id"), nullable=False)
+
+    # Relationships will be added later in full mapping step
 
     def update(self, data):
         for key, value in data.items():
-            # validation helpers
+
             if key == "text":
                 value = self.validate_text(value)
+
             elif key == "rating":
                 value = self.validate_rating(value)
 
@@ -25,11 +27,11 @@ class Review(BaseModel):
         db.session.commit()
 
     # ======================
-    # VALIDATION HELPERS
+    # VALIDATION
     # ======================
 
     def validate_text(self, text):
-        if not text or len(text.strip()) == 0:
+        if not text or not text.strip():
             raise ValueError("Review text cannot be empty")
         return text
 

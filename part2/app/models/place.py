@@ -12,13 +12,14 @@ class Place(BaseModel):
     longitude = db.Column(db.Float, nullable=False)
 
     owner_id = db.Column(db.String(60), nullable=False)
+    # ❌ Relationships (reviews, amenities) will be added later
 
-    # ❌ NO relationships yet (task requirement)
-
+    # ======================
+    # UPDATE METHOD
+    # ======================
     def update(self, data):
         for key, value in data.items():
 
-            # basic validation (optional lightweight safety)
             if key == "latitude":
                 value = self.validate_lat(value)
             elif key == "longitude":
@@ -34,7 +35,6 @@ class Place(BaseModel):
     # ======================
     # VALIDATION HELPERS
     # ======================
-
     def validate_lat(self, lat):
         lat = float(lat)
         if lat < -90 or lat > 90:

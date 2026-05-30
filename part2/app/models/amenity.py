@@ -6,10 +6,11 @@ class Amenity(BaseModel):
 
     name = db.Column(db.String(128), nullable=False)
 
-    # ❌ Relationships will be added later (Place-Amenity association)
+    # Relationships will be added later (Place ↔ Amenity M2M)
 
     def update(self, data):
         for key, value in data.items():
+
             if key == "name":
                 value = self.validate_name(value)
 
@@ -19,10 +20,9 @@ class Amenity(BaseModel):
         db.session.commit()
 
     # ======================
-    # VALIDATION HELPERS
+    # VALIDATION
     # ======================
-
     def validate_name(self, name):
-        if not name or len(name.strip()) == 0:
+        if not name or not name.strip():
             raise ValueError("Name cannot be empty")
         return name
