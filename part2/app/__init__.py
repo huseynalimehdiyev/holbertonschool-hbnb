@@ -1,8 +1,18 @@
 from flask import Flask
 from flask_restx import Api
+from flask_bcrypt import Bcrypt
+from config import Config
 
-def create_app():
+bcrypt = Bcrypt()
+
+
+def create_app(config_class=Config):
     app = Flask(__name__)
+
+    app.config.from_object(config_class)
+
+    bcrypt.init_app(app)
+
     api = Api(app, title="HBnB API", version="1.0")
 
     from app.api.v1.users import api as users_ns
