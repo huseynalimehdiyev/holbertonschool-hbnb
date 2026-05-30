@@ -1,14 +1,20 @@
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 import uuid
 
-class BaseModel:
-    def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.utcnow()
-        self.updated_at = datetime.utcnow()
+db = SQLAlchemy()
+
+class BaseModel(db.Model):
+    __abstract__ = True  # SQLAlchemy knows this is a base class
+
+    id = db.Column(db.String(60), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def save(self):
-        self.updated_at = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
 
-    def to_dict(self):
-        return self.__dict__
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()

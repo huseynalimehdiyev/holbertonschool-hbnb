@@ -7,6 +7,7 @@ from app.models.amenity import Amenity
 
 class HBnBFacade:
     def __init__(self):
+        # Repositories
         self.user_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
         self.review_repo = InMemoryRepository()
@@ -17,12 +18,17 @@ class HBnBFacade:
     # ======================
 
     def create_user(self, data):
+        """
+        Create a new user
+        Only admin can create another admin
+        """
+        is_admin = data.get("is_admin", False)
         user = User(
             first_name=data["first_name"],
             last_name=data["last_name"],
             email=data["email"],
             password=data["password"],
-            is_admin=data.get("is_admin", False)
+            is_admin=is_admin
         )
         return self.user_repo.create(user)
 
@@ -32,15 +38,20 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
 
-    def update_user(self, user_id, data):
+    def update_user(self, user_id, data, admin_override=False):
+        """
+        Update user data.
+        Normal users cannot change email, password, or is_admin
+        Admins can update everything
+        """
         user = self.get_user(user_id)
         if not user:
             return None
 
-        # ❌ SECURITY: block sensitive fields
-        data.pop("email", None)
-        data.pop("password", None)
-        data.pop("is_admin", None)
+        if not admin_override:
+            data.pop("email", None)
+            data.pop("password", None)
+            data.pop("is_admin", None)
 
         return self.user_repo.update(user_id, data)
 
@@ -64,7 +75,18 @@ class HBnBFacade:
     def get_all_places(self):
         return self.place_repo.get_all()
 
-    def update_place(self, place_id, data):
+    def update_place(self, place_id, data, admin_override=False, user_id=None):
+        """
+        Normal user can only update own places
+        Admins can update any place
+        """
+        place = self.get_place(place_id)
+        if not place:
+            return None
+
+        if not admin_override and getattr(place, "owner_id", None) != user_id:
+            raise PermissionError("You cannot modify a place you do not own")
+
         return self.place_repo.update(place_id, data)
 
     # ======================
@@ -121,11 +143,34 @@ class HBnBFacade:
     def get_all_reviews(self):
         return self.review_repo.get_all()
 
-    def update_review(self, review_id, data):
+    def update_review(self, review_id, data, admin_override=False, user_id=None):
+        """
+        Normal user can only update own reviews
+        Admins can update any review
+        """
+        review = self.get_review(review_id)
+        if not review:
+            return None
+
+        if not admin_override and review.user_id != user_id:
+            raise PermissionError("You cannot modify a review you do not own")
+
         return self.review_repo.update(review_id, data)
 
-    def delete_review(self, review_id):
+    def delete_review(self, review_id, admin_override=False, user_id=None):
+        """
+        Normal user can only delete own reviews
+        Admins can delete any review
+        """
+        review = self.get_review(review_id)
+        if not review:
+            return False
+
+        if not admin_override and review.user_id != user_id:
+            raise PermissionError("You cannot delete a review you do not own")
+
         return self.review_repo.delete(review_id)
 
 
+# singleton facade
 facade = HBnBFacade()
