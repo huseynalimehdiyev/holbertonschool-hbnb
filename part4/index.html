@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBnB - Places</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header>
+        <img src="images/logo.png" alt="HBnB Logo" class="logo">
+
+        <a
+            href="login.html"
+            id="login-link"
+            class="login-button">
+            Login
+        </a>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+    </nav>
+
+    <main>
+
+        <section class="filters">
+            <h2>Filter by Price</h2>
+
+            <select id="price-filter">
+                <option value="All">All</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </section>
+
+        <section>
+            <h2>Available Places</h2>
+
+            <div id="places-list">
+                <!-- Places loaded dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>All rights reserved</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+
+</body>
+</html>

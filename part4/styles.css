@@ -1,0 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.place-card,
+.review-card {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.logo {
+    height: 60px;
+}
+
+.login-button,
+.details-button {
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: #3498db;
+    color: white;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+}
